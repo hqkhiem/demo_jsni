@@ -16,12 +16,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class DemoJSNI implements EntryPoint {
-
-    /**
-     * Create a remote service proxy to talk to the server-side Greeting
-     * service.
-     */
-    private final LoginServiceAsync greetingService = GWT.create(LoginService.class);
+    
+    private final LoginServiceAsync loginService = GWT.create(LoginService.class);
 
     /**
      * This is the entry point method.
@@ -53,12 +49,14 @@ public class DemoJSNI implements EntryPoint {
             }
         });
 
-        // Create a handler for the sendButton and nameField
+        // Create a handler for the sendButton
         class MyHandler implements ClickHandler {
             public void onClick(ClickEvent event) {
-                if (checkLogin(Account.getEmail(), Account.getPassword())) {
-                    GWT.log("Username: " + Account.getEmail() + "<br>Password: " + Account.getPassword());
-                    sendDataToServer(Account.getEmail(), Account.getPassword());
+                String email = Account.getEmail();
+                String password = Account.getEmail();
+                if (checkLogin(email, password)) {
+                    GWT.log("Username: " + email + "<br>Password: " + password);
+                    sendDataToServer(email, password);
                 }
             }
 
@@ -66,7 +64,7 @@ public class DemoJSNI implements EntryPoint {
                 // we send the data to the server.
                 sendButton.setEnabled(false);
                 serverResponseLabel.setText("");
-                greetingService.loginServer(email, password, new AsyncCallback<String>() {
+                loginService.loginServer(email, password, new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         serverResponseLabel.setHTML("Something wrong!");
@@ -78,10 +76,10 @@ public class DemoJSNI implements EntryPoint {
                         serverResponseLabel.setHTML(result);
                         dialogBox.center();
                         closeButton.setFocus(true);
-                        GWT.log("Received resonse from server!");
+                        GWT.log("Received response from server!");
                     }
                 });
-                GWT.log("Waiting for resonse from server!");
+                GWT.log("Waiting for response from server!");
             }
         } MyHandler myHandler = new MyHandler();
         sendButton.addClickHandler(myHandler);
